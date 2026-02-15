@@ -1,0 +1,27 @@
+﻿<Window x:Class="MusicLibraryManager.ArtistDetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Artist Details"
+        Height="400"
+        Width="600">
+
+    <Grid Margin="10">
+        <StackPanel>
+
+            <TextBlock Text="{Binding Name}"
+                       FontSize="18"
+                       FontWeight="Bold"/>
+
+            <TextBlock Text="{Binding Genre}"/>
+            <TextBlock Text="{Binding DebutDate,
+                              StringFormat=Debut: {0:yyyy}}"/>
+
+            <TextBlock Text="Albums:"
+                       Margin="0,10,0,0"
+                       FontWeight="Bold"/>
+
+            <ListBox ItemsSource="{Binding Albums}"/>
+
+        </StackPanel>
+    </Grid>
+</Window>
