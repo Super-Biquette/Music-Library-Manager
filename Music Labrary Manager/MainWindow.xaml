@@ -5,6 +5,13 @@
         Height="600"
         Width="1000">
 
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="8"/>
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="10">
 
         <Grid.RowDefinitions>
@@ -15,29 +22,21 @@
 
         <!-- FILTERS -->
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Genre:" VerticalAlignment="Center"/>
             <ComboBox Width="120"
-                      Margin="5"
                       ItemsSource="{Binding Genres}"
-                      SelectedItem="{Binding SelectedGenre}"
-                      SelectionChanged="FilterChanged"/>
-
-            <TextBlock Text="Search:" VerticalAlignment="Center"/>
+                      SelectedItem="{Binding SelectedGenre}"/>
+            
             <TextBox Width="150"
                      Margin="5"
-                     TextChanged="SearchChanged"/>
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Button Content="Sort A-Z"
-                    Click="SortAZ_Click"
-                    Margin="5"/>
+            <Button Content="Sort A-Z" Command="{Binding SortAZCommand}"/>
 
-            <Button Content="Sort by Debut Date"
-                    Click="SortDate_Click"
-                    Margin="5"/>
+            <Button Content="Sort by Date" Command="{Binding SortDateCommand}"/>
 
-            <Button Content="View Details"
-                    Click="ViewDetails_Click"
-                    Margin="5"/>
+            <Button Content="Play" Command="{Binding PlayCommand}" />
+
+            <Button Content="View Details" Command="{Binding ViewDetailsCommand}" />
         </StackPanel>
 
         <!-- MAIN CONTENT -->
@@ -52,8 +51,16 @@
             <!-- ARTISTS -->
             <ListBox Grid.Column="0"
                      ItemsSource="{Binding FilteredArtists}"
-                     SelectedItem="{Binding SelectedArtist}"/>
-
+                     SelectedItem="{Binding SelectedArtist}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding Genre}" FontSize="12"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+            </ListBox>
             <!-- ALBUMS -->
             <ListBox Grid.Column="1"
                      ItemsSource="{Binding SelectedArtist.Albums}"
@@ -64,6 +71,8 @@
                 <TextBlock Text="Album Details"
                            FontWeight="Bold"
                            FontSize="16"/>
+
+                <Image Source="{Binding SelectedAlbum.CoverImagePath}" Height="120"/>
 
                 <TextBlock Text="{Binding SelectedAlbum.ReleaseDate}"/>
                 <TextBlock Text="{Binding SelectedAlbum.YearsSinceRelease,
@@ -84,8 +93,7 @@
                     HorizontalAlignment="Center">
             <Button Content="Save"
                     Width="150"
-                    Margin="5"
-                    Click="Save_Click"/>
+                    Command="{Binding SaveCommand}"/>
         </StackPanel>
 
     </Grid>
