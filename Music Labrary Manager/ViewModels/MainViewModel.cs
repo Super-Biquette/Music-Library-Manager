@@ -37,7 +37,8 @@ namespace Music_Labrary_Manager.ViewModels
         public ICommand SortDateCommand { get; set; }
         public ICommand PlayCommand { get; set; }
         public ICommand ViewDetailsCommand { get; set; }
-        public ICommand SaveCommand { get; set; }
+        public ICommand SavePlaylistCommand { get; set; }
+        public ICommand LoadPlaylistCommand { get; set; }
         public ICommand StopCommand { get; }
         public ICommand VolumeCommand { get; }
         public ICommand NextCommand { get; }
@@ -54,7 +55,18 @@ namespace Music_Labrary_Manager.ViewModels
             }
         }
         public Song SelectedSong { get; set; }
-        
+
+        private DeezerAPI deezer = new DeezerAPI();
+        private RapidAPI rapid = new RapidAPI();
+        public ICommand LoadAPICommand { get; }
+        public ICommand GetSongInfoCommand { get; }
+        public string ApiSearchText { get; set; } = "rock";
+        public ObservableCollection<Song> Playlist { get; set; } = new ObservableCollection<Song>();
+        public ICommand AddToPlaylistCommand { get; }
+        public ICommand RemoveFromPlaylistCommand { get; }
+        public ObservableCollection<Song> APISongs { get; set; } = new ObservableCollection<Song>();
+        private readonly string playlistFile = "playlist.json";
+
         public MainViewModel()
         {
             SeedData();
@@ -63,11 +75,16 @@ namespace Music_Labrary_Manager.ViewModels
             SortDateCommand = new Command(_ => SortByDate());
             PlayCommand = new Command(_ => Play());
             ViewDetailsCommand = new Command(_ => OpenDetails());
-            SaveCommand = new Command(_ => Save());
+            SavePlaylistCommand = new Command(_ => SavePlaylist());
+            LoadPlaylistCommand = new Command(_ => LoadPlaylist());
             StopCommand = new Command(_ => player.Stop());
             VolumeCommand = new Command(v => player.SetVolume((double)v));
             NextCommand = new Command(_ => Next());
             PreviousCommand = new Command(_ => Previous());
+            LoadAPICommand = new Command(async _ => await LoadFromAPI());
+            GetSongInfoCommand = new Command(async _ => await rapid.GetSongInfo());
+            AddToPlaylistCommand = new Command(_ => AddToPlaylist());
+            RemoveFromPlaylistCommand = new Command(_ => RemoveFromPlaylist());
         }
 
         private double volume = 0.5;
@@ -78,6 +95,46 @@ namespace Music_Labrary_Manager.ViewModels
             {
                 volume = value;
                 player.SetVolume(volume);
+            }
+        }
+
+        private void AddToPlaylist()
+        {
+            if (SelectedSong != null && !Playlist.Contains(SelectedSong))
+            {
+                Playlist.Add(SelectedSong);
+            }
+        }
+
+        private void RemoveFromPlaylist()
+        {
+            if (SelectedSong != null)
+            {
+                Playlist.Remove(SelectedSong);
+            }
+        }
+
+        private async Task LoadFromAPI()
+        {
+            try
+            {
+                var songs = await deezer.SearchSongsAsync(ApiSearchText);
+
+                APISongs.Clear();
+
+                foreach (var song in songs)
+                {
+                    APISongs.Add(song);
+                }
+
+                if (APISongs.Count == 0)
+                {
+                    MessageBox.Show("No results found.");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Error loading data from API.");
             }
         }
 
@@ -109,7 +166,7 @@ namespace Music_Labrary_Manager.ViewModels
             }
         }
 
-        private void Save()
+        private void SavePlaylist()
         {
             try
             {
@@ -118,16 +175,40 @@ namespace Music_Labrary_Manager.ViewModels
                     WriteIndented = true
                 };
 
-                string json = JsonSerializer.Serialize(Artists, options);
-                File.WriteAllText("Music.json", json);
+                string json = JsonSerializer.Serialize(Playlist, options);
+                File.WriteAllText(playlistFile, json);
 
-                MessageBox.Show("Saved successfully!");
+                MessageBox.Show("Playlist saved!");
             }
             catch
             {
-                MessageBox.Show("Error saving file");
+                MessageBox.Show("Error saving playlist");
             }
         }
+
+        private void LoadPlaylist()
+        {
+            try
+            {
+                if (!File.Exists(playlistFile)) return;
+
+                string json = File.ReadAllText(playlistFile);
+
+                var list = JsonSerializer.Deserialize<List<Song>>(json);
+
+                Playlist.Clear();
+
+                foreach (var song in list)
+                {
+                    Playlist.Add(song);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Error loading playlist");
+            }
+        }
+
         private void OpenDetails()
         {
             if (SelectedArtist != null)

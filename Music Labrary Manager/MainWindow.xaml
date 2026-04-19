@@ -13,101 +13,139 @@
     </Window.Resources>
 
     <Grid Margin="10">
+        <TabControl>
+            <!-- PLAYLIST TAB -->
+            <TabItem Header="Library">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+                    <!-- FILTERS -->
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox Width="120"
+                              ItemsSource="{Binding Genres}"
+                              SelectedItem="{Binding SelectedGenre}"/>
 
-        <!-- FILTERS -->
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-            <ComboBox Width="120"
-                      ItemsSource="{Binding Genres}"
-                      SelectedItem="{Binding SelectedGenre}"/>
-            
-            <TextBox Width="150"
-                     Margin="5"
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Width="150"
+                             Margin="5"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Button Content="Sort A-Z" Command="{Binding SortAZCommand}"/>
+                        <Button Content="Sort A-Z" Command="{Binding SortAZCommand}"/>
 
-            <Button Content="Sort by Date" Command="{Binding SortDateCommand}"/>
-            <Button Content="Previous" Command="{Binding PreviousCommand}" />
+                        <Button Content="Sort by Date" Command="{Binding SortDateCommand}"/>
+                        <Button Content="Previous" Command="{Binding PreviousCommand}" />
 
-            <Button Content="Play" Command="{Binding PlayCommand}" />
+                        <Button Content="Play" Command="{Binding PlayCommand}" />
 
-            <Button Content="Stop" Command="{Binding StopCommand}" />
+                        <Button Content="Stop" Command="{Binding StopCommand}" />
 
-            <Button Content="Next" Command="{Binding NextCommand}" />
+                        <Button Content="Next" Command="{Binding NextCommand}" />
 
-            <Button Content="View Details" Command="{Binding ViewDetailsCommand}" />
+                        <TextBlock Text="Volume" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
-            <TextBlock Text="Volume" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        <Slider Minimum="0"
+                            Maximum="1"
+                            Value="{Binding Volume}"
+                            Width="100"/>
+                    </StackPanel>
 
-            <Slider Minimum="0"
-                    Maximum="1"
-                    Value="{Binding Volume}"
-                    Width="100"/>
-        </StackPanel>
+                    <!-- MAIN CONTENT -->
+                    <Grid Grid.Row="1">
 
-        <!-- MAIN CONTENT -->
-        <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>
+                        <!-- ARTISTS -->
+                        <ListBox Grid.Column="0"
+                             ItemsSource="{Binding FilteredArtists}"
+                             SelectedItem="{Binding SelectedArtist}"/>
 
-            <!-- ARTISTS -->
-            <ListBox Grid.Column="0"
-                     ItemsSource="{Binding FilteredArtists}"
-                     SelectedItem="{Binding SelectedArtist}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                                <TextBlock Text="{Binding Genre}" FontSize="12"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-            </ListBox>
-            <!-- ALBUMS -->
-            <ListBox Grid.Column="1"
-                     ItemsSource="{Binding SelectedArtist.Albums}"
-                     SelectedItem="{Binding SelectedAlbum}"/>
 
-            <!-- DETAILS -->
-            <StackPanel Grid.Column="2" Margin="10">
-                <TextBlock Text="Album Details"
-                           FontWeight="Bold"
-                           FontSize="16"/>
+                        <!-- ALBUMS -->
+                        <ListBox Grid.Column="1"
+                             ItemsSource="{Binding SelectedArtist.Albums}"
+                             SelectedItem="{Binding SelectedAlbum}"/>
+                        <!-- SONGS -->
+                        <StackPanel Grid.Column="2">
 
-                <Image Source="{Binding SelectedAlbum.CoverImagePath}" Height="120"/>
+                            <TextBlock Text="Songs"
+                                       FontWeight="Bold"
+                                       FontSize="16"/>
 
-                <TextBlock Text="{Binding SelectedAlbum.ReleaseDate}"/>
-                <TextBlock Text="{Binding SelectedAlbum.YearsSinceRelease,
-                                  StringFormat=Years since release: {0}}"/>
+                            <ListBox ItemsSource="{Binding SelectedAlbum.Songs}"
+                                     SelectedItem="{Binding SelectedSong}"/>
 
-                <TextBlock Text="Songs:"
-                           Margin="0,10,0,0"
-                           FontWeight="Bold"/>
+                            <Button Content="Add to Playlist"
+                                    Command="{Binding AddToPlaylistCommand}"/>
 
-                <ListBox ItemsSource="{Binding SelectedAlbum.Songs}"
-                         SelectedItem="{Binding SelectedSong}"/>
-            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
 
-        </Grid>
+            <!-- API TAB -->
+            <TabItem Header="API">
+                <StackPanel>
 
-        <!-- SAVE BUTTON -->
-        <StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center">
-            <Button Content="Save"
-                    Width="150"
-                    Command="{Binding SaveCommand}"/>
-        </StackPanel>
+                    <TextBlock Text="Search Online Music"
+                               FontSize="16"
+                               FontWeight="Bold"/>
+
+                    <StackPanel Orientation="Horizontal">
+
+                        <TextBox Width="200"
+                                 Text="{Binding ApiSearchText}"/>
+
+                        <Button Content="Search"
+                                Command="{Binding LoadAPICommand}"/>
+
+                        <Button Content="Get Info"
+                                Command="{Binding GetSongInfoCommand}"/>
+
+                    </StackPanel>
+
+                    <ListBox ItemsSource="{Binding APISongs}"
+                             SelectedItem="{Binding SelectedSong}"/>
+
+                    <Button Content="Add to Playlist"
+                            Command="{Binding AddToPlaylistCommand}"/>
+
+                </StackPanel>
+            </TabItem>
+
+            <!-- PLAYUST TAB -->
+            <TabItem Header="Playlist">
+                <StackPanel>
+
+                    <TextBlock Text="My Playlist"
+                               FontSize="16"
+                               FontWeight="Bold"/>
+
+                    <ListBox ItemsSource="{Binding Playlist}"
+                             SelectedItem="{Binding SelectedSong}"/>
+
+                    <StackPanel Orientation="Horizontal">
+
+                        <Button Content="Play" Command="{Binding PlayCommand}"/>
+                        <Button Content="Remove"
+                                Command="{Binding RemoveFromPlaylistCommand}"/>
+                        <Button Content="Save Playlist"
+                                Command="{Binding SavePlaylistCommand}" />
+
+                        <Button Content="Load Playlist"
+                                Command="{Binding LoadPlaylistCommand}" />
+
+                    </StackPanel>
+
+                </StackPanel>
+            </TabItem>
+        </TabControl>
 
     </Grid>
 </Window>
