@@ -42,6 +42,8 @@ namespace Music_Labrary_Manager.ViewModels
             }
         }
 
+        public Song SelectedSong { get; set; }
+
         public MainViewModel()
         {
             SeedData();
@@ -82,10 +84,9 @@ namespace Music_Labrary_Manager.ViewModels
         }
         private void Play()
         {
-            if (SelectedAlbum != null && SelectedAlbum.Songs.Any())
-            {
-                var song = SelectedAlbum.Songs.First();
-                player.Play(song.FilePath);
+            if (SelectedSong != null)
+            { 
+                player.Play(SelectedSong.FilePath);
             }
         }
         private void SortAZ()
@@ -216,5 +217,6 @@ namespace Music_Labrary_Manager.ViewModels
 
             ApplyFilters();
         }
+
     }
 }

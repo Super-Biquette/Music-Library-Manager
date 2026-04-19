@@ -22,7 +22,8 @@ namespace Music_Labrary_Manager.Services
                     MessageBox.Show("File not found");
                     return;
                 }
-                player.Open(new Uri(path, UriKind.RelativeOrAbsolute));
+                string fullpath = Path.GetFullPath(path);
+                player.Open(new Uri(fullpath, UriKind.Absolute));
                 player.Play();
             }
             catch

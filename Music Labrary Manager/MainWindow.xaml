@@ -82,7 +82,8 @@
                            Margin="0,10,0,0"
                            FontWeight="Bold"/>
 
-                <ListBox ItemsSource="{Binding SelectedAlbum.Songs}"/>
+                <ListBox ItemsSource="{Binding SelectedAlbum.Songs}"
+                         SelectedItem="{Binding SelectedSong}"/>
             </StackPanel>
 
         </Grid>
