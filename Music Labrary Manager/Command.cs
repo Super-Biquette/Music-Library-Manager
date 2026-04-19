@@ -9,7 +9,7 @@ namespace Music_Labrary_Manager
 {
     public class Command : ICommand
     {
-        private Action<object> execute;
+        private readonly Action<object> execute;
 
         public Command(Action<object> execute)
         {

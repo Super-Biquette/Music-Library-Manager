@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace MusicLibraryManager
 {
-    /// <summary>
-    /// Logique d'interaction pour ArtistDetailsWindow.xaml
-    /// </summary>
     public partial class ArtistDetailsWindow : Window
     {
         public ArtistDetailsWindow(Artist artist)

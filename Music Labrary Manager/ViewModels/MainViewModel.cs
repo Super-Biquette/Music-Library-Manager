@@ -31,6 +31,17 @@ namespace Music_Labrary_Manager.ViewModels
         public ICommand SaveCommand { get; set; }
         private MusicPlayer player = new MusicPlayer();
 
+        private string searchText;
+        public string SearchText
+        {
+            get => searchText;
+            set
+            {
+                searchText = value;
+                ApplyFilters();
+            }
+        }
+
         public MainViewModel()
         {
             SeedData();
@@ -101,10 +112,13 @@ namespace Music_Labrary_Manager.ViewModels
             var filtered = Artists.AsEnumerable();
 
             if (!string.IsNullOrEmpty(SelectedGenre) && SelectedGenre != "All")
+            {
                 filtered = filtered.Where(a => a.Genre == SelectedGenre);
-
+            }
             if (!string.IsNullOrEmpty(searchText))
+            {
                 filtered = filtered.Where(a => a.Name.ToLower().Contains(searchText.ToLower()));
+            }
 
             FilteredArtists.Clear();
             foreach (var artist in filtered)
@@ -129,17 +143,10 @@ namespace Music_Labrary_Manager.ViewModels
                 ReleaseDate = new DateTime(2001, 3, 13)
             };
 
-            discovery.Songs.Add(new Song
-            {
-                Title = "One More Time",
-                Duration = TimeSpan.FromMinutes(5)
-            });
-
-            discovery.Songs.Add(new Song
-            {
-                Title = "Harder Better Faster Stronger",
-                Duration = TimeSpan.FromMinutes(4)
-            });
+            discovery.Songs.Add(new Song{ Title = "One More Time",Duration = TimeSpan.FromMinutes(5), FilePath = "Songs/onemoretime.mp3" });
+            discovery.Songs.Add(new Song{ Title = "Harder Better Faster Stronger",Duration = TimeSpan.FromMinutes(4), FilePath = "Songs/harderbetterfasterstronger.mp3" });
+            discovery.Songs.Add(new Song{ Title = "Digital Love",Duration = TimeSpan.FromMinutes(4), FilePath = "Songs/digitallove.mp3" });
+            discovery.Songs.Add(new Song{ Title = "Get Lucky",Duration = TimeSpan.FromMinutes(4), FilePath = "Songs/getlucky.mp3" });
 
             daftPunk.Albums.Add(discovery);
             Artists.Add(daftPunk);
@@ -158,12 +165,10 @@ namespace Music_Labrary_Manager.ViewModels
                 ReleaseDate = new DateTime(2011, 1, 24)
             };
 
-            album21.Songs.Add(new Song
-            {
-                Title = "Rolling in the Deep",
-                Duration = TimeSpan.FromMinutes(3)
-            });
-
+            album21.Songs.Add(new Song{Title = "Rolling in the Deep",Duration = TimeSpan.FromMinutes(3), FilePath = "Songs/rollinginthedeep.mp3"});
+            album21.Songs.Add(new Song{Title = "Someone Like You",Duration = TimeSpan.FromMinutes(4), FilePath = "Songs/someonelikeyou.mp3"});
+            album21.Songs.Add(new Song{Title = "Set Fire to the Rain",Duration = TimeSpan.FromMinutes(4), FilePath = "Songs/setfiretotherain.mp3"});
+            album21.Songs.Add(new Song{Title = "Skyfall",Duration = TimeSpan.FromMinutes(3), FilePath = "Songs/skyfall.mp3"});
             adele.Albums.Add(album21);
             Artists.Add(adele);
 
@@ -181,12 +186,10 @@ namespace Music_Labrary_Manager.ViewModels
                 ReleaseDate = new DateTime(2000, 7, 10)
             };
 
-            parachutes.Songs.Add(new Song
-            {
-                Title = "Yellow",
-                Duration = TimeSpan.FromMinutes(4)
-            });
-
+            parachutes.Songs.Add(new Song{Title = "Viva La Vida",Duration = TimeSpan.FromMinutes(5), FilePath = "Songs/vivalavida.mp3"});
+            parachutes.Songs.Add(new Song{Title = "Paradise",Duration = TimeSpan.FromMinutes(4), FilePath = "Songs/paradise.mp3"});
+            parachutes.Songs.Add(new Song{Title = "A Sky Full Of Stars",Duration = TimeSpan.FromMinutes(5), FilePath = "Songs/askyfullofstars.mp3"});
+            
             coldplay.Albums.Add(parachutes);
             Artists.Add(coldplay);
 
@@ -204,11 +207,9 @@ namespace Music_Labrary_Manager.ViewModels
                 ReleaseDate = new DateTime(2017, 6, 23)
             };
 
-            evolve.Songs.Add(new Song
-            {
-                Title = "Believer",
-                Duration = TimeSpan.FromMinutes(3)
-            });
+            evolve.Songs.Add(new Song{Title = "Believer",Duration = TimeSpan.FromMinutes(3), FilePath = "Songs/believer.mp3"});
+            evolve.Songs.Add(new Song{Title = "Thunder",Duration = TimeSpan.FromMinutes(4), FilePath = "Songs/thunder.mp3"});
+            evolve.Songs.Add(new Song{Title = "Radioactive",Duration = TimeSpan.FromMinutes(3), FilePath = "Songs/radioactive.mp3"});
 
             imagineDragons.Albums.Add(evolve);
             Artists.Add(imagineDragons);
