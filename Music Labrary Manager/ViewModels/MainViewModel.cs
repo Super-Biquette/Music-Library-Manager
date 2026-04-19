@@ -21,7 +21,16 @@ namespace Music_Labrary_Manager.ViewModels
         public ObservableCollection<Artist> FilteredArtists { get; set; } = new ObservableCollection<Artist>();
         public ObservableCollection<string> Genres { get; set; } =
             new ObservableCollection<string> { "All", "Pop", "Rock", "Electronic" };
-        public string SelectedGenre { get; set; } = "All";
+        private string selectedGenre { get; set; } = "All";
+        public string SelectedGenre
+        {
+            get => selectedGenre;
+            set
+            {
+                selectedGenre = value;
+                ApplyFilters();
+            }
+        }
         public Artist SelectedArtist { get; set; }
         public Album SelectedAlbum { get; set; }
         public ICommand SortAZCommand { get; set; }
@@ -29,8 +38,11 @@ namespace Music_Labrary_Manager.ViewModels
         public ICommand PlayCommand { get; set; }
         public ICommand ViewDetailsCommand { get; set; }
         public ICommand SaveCommand { get; set; }
+        public ICommand StopCommand { get; }
+        public ICommand VolumeCommand { get; }
+        public ICommand NextCommand { get; }
+        public ICommand PreviousCommand { get; }
         private MusicPlayer player = new MusicPlayer();
-
         private string searchText;
         public string SearchText
         {
@@ -41,9 +53,8 @@ namespace Music_Labrary_Manager.ViewModels
                 ApplyFilters();
             }
         }
-
         public Song SelectedSong { get; set; }
-
+        
         public MainViewModel()
         {
             SeedData();
@@ -53,6 +64,49 @@ namespace Music_Labrary_Manager.ViewModels
             PlayCommand = new Command(_ => Play());
             ViewDetailsCommand = new Command(_ => OpenDetails());
             SaveCommand = new Command(_ => Save());
+            StopCommand = new Command(_ => player.Stop());
+            VolumeCommand = new Command(v => player.SetVolume((double)v));
+            NextCommand = new Command(_ => Next());
+            PreviousCommand = new Command(_ => Previous());
+        }
+
+        private double volume = 0.5;
+        public double Volume
+        {
+            get => volume;
+            set
+            {
+                volume = value;
+                player.SetVolume(volume);
+            }
+        }
+
+        private void Next()
+        {
+            if (SelectedAlbum == null || SelectedSong == null) return;
+
+            var songs = SelectedAlbum.Songs.ToList();
+            int index = songs.IndexOf(SelectedSong);
+
+            if (index < songs.Count - 1)
+            {
+                SelectedSong = songs[index + 1];
+                player.Play(SelectedSong.FilePath);
+            }
+        }
+
+        private void Previous()
+        {
+            if (SelectedAlbum == null || SelectedSong == null) return;
+
+            var songs = SelectedAlbum.Songs.ToList();
+            int index = songs.IndexOf(SelectedSong);
+
+            if (index > 0)
+            {
+                SelectedSong = songs[index - 1];
+                player.Play(SelectedSong.FilePath);
+            }
         }
 
         private void Save()
@@ -197,7 +251,7 @@ namespace Music_Labrary_Manager.ViewModels
             var imagineDragons = new BandArtist
             {
                 Name = "Imagine Dragons",
-                Genre = "Rock",
+                Genre = "Pop",
                 DebutDate = new DateTime(2008, 1, 1),
                 MemberCount = 4
             };

@@ -32,7 +32,8 @@ namespace Music_Labrary_Manager.Services
             }
         }
 
-        public void Pause() => player.Pause();
+        public void SetVolume(double  volume)
+        { player.Volume = volume; }
         public void Stop() => player.Stop();
     }
 }

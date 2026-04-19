@@ -33,10 +33,22 @@
             <Button Content="Sort A-Z" Command="{Binding SortAZCommand}"/>
 
             <Button Content="Sort by Date" Command="{Binding SortDateCommand}"/>
+            <Button Content="Previous" Command="{Binding PreviousCommand}" />
 
             <Button Content="Play" Command="{Binding PlayCommand}" />
 
+            <Button Content="Stop" Command="{Binding StopCommand}" />
+
+            <Button Content="Next" Command="{Binding NextCommand}" />
+
             <Button Content="View Details" Command="{Binding ViewDetailsCommand}" />
+
+            <TextBlock Text="Volume" VerticalAlignment="Center" Margin="10,0,0,0"/>
+
+            <Slider Minimum="0"
+                    Maximum="1"
+                    Value="{Binding Volume}"
+                    Width="100"/>
         </StackPanel>
 
         <!-- MAIN CONTENT -->
