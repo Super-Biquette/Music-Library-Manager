@@ -91,7 +91,6 @@
     <Compile Include="Command.cs" />
     <Compile Include="Services\DeezerAPI.cs" />
     <Compile Include="Services\MusicPlayer.cs" />
-    <Compile Include="Services\RapidAPI.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

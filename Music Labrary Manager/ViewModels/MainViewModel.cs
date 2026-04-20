@@ -57,7 +57,6 @@ namespace Music_Labrary_Manager.ViewModels
         public Song SelectedSong { get; set; }
 
         private DeezerAPI deezer = new DeezerAPI();
-        private RapidAPI rapid = new RapidAPI();
         public ICommand LoadAPICommand { get; }
         public ICommand GetSongInfoCommand { get; }
         public string ApiSearchText { get; set; } = "rock";
@@ -74,7 +73,6 @@ namespace Music_Labrary_Manager.ViewModels
             SortAZCommand = new Command(_ => SortAZ());
             SortDateCommand = new Command(_ => SortByDate());
             PlayCommand = new Command(_ => Play());
-            ViewDetailsCommand = new Command(_ => OpenDetails());
             SavePlaylistCommand = new Command(_ => SavePlaylist());
             LoadPlaylistCommand = new Command(_ => LoadPlaylist());
             StopCommand = new Command(_ => player.Stop());
@@ -82,7 +80,6 @@ namespace Music_Labrary_Manager.ViewModels
             NextCommand = new Command(_ => Next());
             PreviousCommand = new Command(_ => Previous());
             LoadAPICommand = new Command(async _ => await LoadFromAPI());
-            GetSongInfoCommand = new Command(async _ => await rapid.GetSongInfo());
             AddToPlaylistCommand = new Command(_ => AddToPlaylist());
             RemoveFromPlaylistCommand = new Command(_ => RemoveFromPlaylist());
         }
@@ -206,15 +203,6 @@ namespace Music_Labrary_Manager.ViewModels
             catch
             {
                 MessageBox.Show("Error loading playlist");
-            }
-        }
-
-        private void OpenDetails()
-        {
-            if (SelectedArtist != null)
-            {
-                var window = new ArtistDetailsWindow(SelectedArtist);
-                window.Show();
             }
         }
         private void Play()

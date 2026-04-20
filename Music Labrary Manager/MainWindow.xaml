@@ -105,9 +105,6 @@
                         <Button Content="Search"
                                 Command="{Binding LoadAPICommand}"/>
 
-                        <Button Content="Get Info"
-                                Command="{Binding GetSongInfoCommand}"/>
-
                     </StackPanel>
 
                     <ListBox ItemsSource="{Binding APISongs}"
