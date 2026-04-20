@@ -89,9 +89,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Command.cs" />
+    <Compile Include="Input.xaml.cs">
+      <DependentUpon>Input.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\DeezerAPI.cs" />
     <Compile Include="Services\MusicPlayer.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Page Include="Input.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

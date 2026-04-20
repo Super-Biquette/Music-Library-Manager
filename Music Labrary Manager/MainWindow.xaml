@@ -14,7 +14,7 @@
 
     <Grid Margin="10">
         <TabControl>
-            <!-- PLAYLIST TAB -->
+            <!-- LIBRARY TAB -->
             <TabItem Header="Library">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -36,20 +36,12 @@
                         <Button Content="Sort A-Z" Command="{Binding SortAZCommand}"/>
 
                         <Button Content="Sort by Date" Command="{Binding SortDateCommand}"/>
-                        <Button Content="Previous" Command="{Binding PreviousCommand}" />
 
-                        <Button Content="Play" Command="{Binding PlayCommand}" />
+                        <Button Content="Add Artist"
+                                Command="{Binding AddArtistCommand}"/>
 
-                        <Button Content="Stop" Command="{Binding StopCommand}" />
-
-                        <Button Content="Next" Command="{Binding NextCommand}" />
-
-                        <TextBlock Text="Volume" VerticalAlignment="Center" Margin="10,0,0,0"/>
-
-                        <Slider Minimum="0"
-                            Maximum="1"
-                            Value="{Binding Volume}"
-                            Width="100"/>
+                        <Button Content="Add Album"
+                                Command="{Binding AddAlbumCommand}"/>
                     </StackPanel>
 
                     <!-- MAIN CONTENT -->
@@ -112,6 +104,9 @@
 
                     <Button Content="Add to Playlist"
                             Command="{Binding AddToPlaylistCommand}"/>
+                    
+                    <Button Content="Add to Library"
+                            Command="{Binding AddToLibraryCommand}"/>
 
                 </StackPanel>
             </TabItem>
@@ -128,8 +123,24 @@
                              SelectedItem="{Binding SelectedSong}"/>
 
                     <StackPanel Orientation="Horizontal">
-
+                        <Button Content="Previous"
+                                Command="{Binding PreviousCommand}" />
                         <Button Content="Play" Command="{Binding PlayCommand}"/>
+                        <Button Content="Next"
+                                Command="{Binding NextCommand}" />
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <TextBlock Text="Volume"
+                                       VerticalAlignment="Center"
+                                       Margin="10"/>
+
+                            <Slider Minimum="0"
+                                    Maximum="1"
+                                    Value="{Binding Volume}"
+                                    VerticalAlignment="Center"
+                                    Width="150"/>
+                        </StackPanel>
+                        
                         <Button Content="Remove"
                                 Command="{Binding RemoveFromPlaylistCommand}"/>
                         <Button Content="Save Playlist"

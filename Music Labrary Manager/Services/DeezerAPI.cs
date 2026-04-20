@@ -13,7 +13,7 @@ namespace Music_Labrary_Manager.Services
     public class DeezerAPI
     {
         private readonly HttpClient client = new HttpClient();
-
+        //searches song from Deezer API using query
         public async Task<List<Song>> SearchSongsAsync(string query)
         {
             var songs = new List<Song>();

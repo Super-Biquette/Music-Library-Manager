@@ -18,7 +18,7 @@ namespace Music_Labrary_Manager.Models
 
         public override string ToString()
         {
-            return $"{Title} ({ReleaseDate.Year})";
+            return Title;
         }
     }
 }

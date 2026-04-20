@@ -17,10 +17,13 @@ namespace Music_Labrary_Manager.ViewModels
 {
     public class MainViewModel
     {
+        //properties
         public ObservableCollection<Artist> Artists { get; set; } = new ObservableCollection<Artist>();
         public ObservableCollection<Artist> FilteredArtists { get; set; } = new ObservableCollection<Artist>();
         public ObservableCollection<string> Genres { get; set; } =
             new ObservableCollection<string> { "All", "Pop", "Rock", "Electronic" };
+        public ObservableCollection<Song> Playlist { get; set; } = new ObservableCollection<Song>();
+        public ObservableCollection<Song> APISongs { get; set; } = new ObservableCollection<Song>();
         private string selectedGenre { get; set; } = "All";
         public string SelectedGenre
         {
@@ -31,19 +34,6 @@ namespace Music_Labrary_Manager.ViewModels
                 ApplyFilters();
             }
         }
-        public Artist SelectedArtist { get; set; }
-        public Album SelectedAlbum { get; set; }
-        public ICommand SortAZCommand { get; set; }
-        public ICommand SortDateCommand { get; set; }
-        public ICommand PlayCommand { get; set; }
-        public ICommand ViewDetailsCommand { get; set; }
-        public ICommand SavePlaylistCommand { get; set; }
-        public ICommand LoadPlaylistCommand { get; set; }
-        public ICommand StopCommand { get; }
-        public ICommand VolumeCommand { get; }
-        public ICommand NextCommand { get; }
-        public ICommand PreviousCommand { get; }
-        private MusicPlayer player = new MusicPlayer();
         private string searchText;
         public string SearchText
         {
@@ -54,36 +44,6 @@ namespace Music_Labrary_Manager.ViewModels
                 ApplyFilters();
             }
         }
-        public Song SelectedSong { get; set; }
-
-        private DeezerAPI deezer = new DeezerAPI();
-        public ICommand LoadAPICommand { get; }
-        public ICommand GetSongInfoCommand { get; }
-        public string ApiSearchText { get; set; } = "rock";
-        public ObservableCollection<Song> Playlist { get; set; } = new ObservableCollection<Song>();
-        public ICommand AddToPlaylistCommand { get; }
-        public ICommand RemoveFromPlaylistCommand { get; }
-        public ObservableCollection<Song> APISongs { get; set; } = new ObservableCollection<Song>();
-        private readonly string playlistFile = "playlist.json";
-
-        public MainViewModel()
-        {
-            SeedData();
-            ApplyFilters();
-            SortAZCommand = new Command(_ => SortAZ());
-            SortDateCommand = new Command(_ => SortByDate());
-            PlayCommand = new Command(_ => Play());
-            SavePlaylistCommand = new Command(_ => SavePlaylist());
-            LoadPlaylistCommand = new Command(_ => LoadPlaylist());
-            StopCommand = new Command(_ => player.Stop());
-            VolumeCommand = new Command(v => player.SetVolume((double)v));
-            NextCommand = new Command(_ => Next());
-            PreviousCommand = new Command(_ => Previous());
-            LoadAPICommand = new Command(async _ => await LoadFromAPI());
-            AddToPlaylistCommand = new Command(_ => AddToPlaylist());
-            RemoveFromPlaylistCommand = new Command(_ => RemoveFromPlaylist());
-        }
-
         private double volume = 0.5;
         public double Volume
         {
@@ -92,6 +52,126 @@ namespace Music_Labrary_Manager.ViewModels
             {
                 volume = value;
                 player.SetVolume(volume);
+            }
+        }
+        public Artist SelectedArtist { get; set; }
+        public Album SelectedAlbum { get; set; }
+        private MusicPlayer player = new MusicPlayer();
+        public Song SelectedSong { get; set; }
+
+        private DeezerAPI deezer = new DeezerAPI();
+        public ICommand SortAZCommand { get; set; }
+        public ICommand SortDateCommand { get; set; }
+        public ICommand PlayCommand { get; set; }
+        public ICommand ViewDetailsCommand { get; set; }
+        public ICommand SavePlaylistCommand { get; set; }
+        public ICommand LoadPlaylistCommand { get; set; }
+        public ICommand StopCommand { get; }
+        public ICommand VolumeCommand { get; }
+        public ICommand NextCommand { get; }
+        public ICommand PreviousCommand { get; }
+        public ICommand LoadAPICommand { get; }
+        public ICommand GetSongInfoCommand { get; }
+        public ICommand AddToPlaylistCommand { get; }
+        public ICommand RemoveFromPlaylistCommand { get; }
+        public ICommand AddToLibraryCommand { get; }
+        public ICommand AddArtistCommand { get; }
+        public ICommand AddAlbumCommand { get; }
+        public string ApiSearchText { get; set; } = "rock";
+        private readonly string playlistFile = "playlist.json";
+        
+        //constructor
+        public MainViewModel()
+        {
+            SeedData();
+
+            ApplyFilters();
+
+            SortAZCommand = new Command(_ => SortAZ());
+
+            SortDateCommand = new Command(_ => SortByDate());
+
+            PlayCommand = new Command(_ => Play());
+
+            SavePlaylistCommand = new Command(_ => SavePlaylist());
+
+            LoadPlaylistCommand = new Command(_ => LoadPlaylist());
+
+            StopCommand = new Command(_ => player.Stop());
+
+            VolumeCommand = new Command(v => player.SetVolume((double)v));
+
+            NextCommand = new Command(_ => Next());
+
+            PreviousCommand = new Command(_ => Previous());
+
+            LoadAPICommand = new Command(async _ => await LoadFromAPI());
+
+            AddToPlaylistCommand = new Command(_ => AddToPlaylist());
+
+            RemoveFromPlaylistCommand = new Command(_ => RemoveFromPlaylist());
+
+            AddToLibraryCommand = new Command(_ => AddToLibrary());
+
+            AddArtistCommand = new Command(_ => AddArtist());
+
+            AddAlbumCommand = new Command(_ => AddAlbum());
+        }
+        //Adds new album to selected artist
+        private void AddAlbum()
+        {
+            if (SelectedArtist == null)
+            {
+                MessageBox.Show("Select an artist first.");
+                return;
+            }
+
+            var dialog = new Input("Enter album title:");
+
+            if (dialog.ShowDialog() == true)
+            {
+                var title = dialog.ResponseText;
+
+                if (!string.IsNullOrWhiteSpace(title))
+                {
+                    SelectedArtist.Albums.Add(new Album{Title = title});
+                }
+            }
+        }
+        //Qdds new artist to library
+        private void AddArtist()
+        {
+            var dialog = new Input("Enter artist name:");
+
+            if (dialog.ShowDialog() == true)
+            {
+                var name = dialog.ResponseText;
+
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    Artists.Add(new SoloArtist{Name = name});
+                    ApplyFilters();
+                }
+            }
+        }
+        //Adds selected song to album
+        private void AddToLibrary()
+        {
+            if (SelectedSong == null || SelectedAlbum == null)
+            {
+                MessageBox.Show("Select an album first.");
+                return;
+            }
+
+            if (!SelectedAlbum.Songs.Any(s => s.Title == SelectedSong.Title))
+            {
+                SelectedAlbum.Songs.Add(new Song
+                {
+                    Title = SelectedSong.Title,
+                    Duration = SelectedSong.Duration,
+                    FilePath = "" // it has no local file path since it came from the api
+                });
+                MessageBox.Show("Song added to library!");
             }
         }
 
@@ -110,7 +190,7 @@ namespace Music_Labrary_Manager.ViewModels
                 Playlist.Remove(SelectedSong);
             }
         }
-
+        //Loads song from Deezer API
         private async Task LoadFromAPI()
         {
             try
@@ -134,7 +214,7 @@ namespace Music_Labrary_Manager.ViewModels
                 MessageBox.Show("Error loading data from API.");
             }
         }
-
+        //Plays next song in album
         private void Next()
         {
             if (SelectedAlbum == null || SelectedSong == null) return;
@@ -148,7 +228,7 @@ namespace Music_Labrary_Manager.ViewModels
                 player.Play(SelectedSong.FilePath);
             }
         }
-
+        //plays previous song in album
         private void Previous()
         {
             if (SelectedAlbum == null || SelectedSong == null) return;
@@ -162,7 +242,7 @@ namespace Music_Labrary_Manager.ViewModels
                 player.Play(SelectedSong.FilePath);
             }
         }
-
+        //Saves playlist to JSON file
         private void SavePlaylist()
         {
             try
@@ -182,7 +262,7 @@ namespace Music_Labrary_Manager.ViewModels
                 MessageBox.Show("Error saving playlist");
             }
         }
-
+        //Loads playlist from JSON file
         private void LoadPlaylist()
         {
             try
@@ -212,6 +292,7 @@ namespace Music_Labrary_Manager.ViewModels
                 player.Play(SelectedSong.FilePath);
             }
         }
+        //Sort alphabetically
         private void SortAZ()
         {
             var sorted = FilteredArtists.OrderBy(a => a.Name).ToList();
@@ -221,7 +302,7 @@ namespace Music_Labrary_Manager.ViewModels
                 FilteredArtists.Add(a);
             }
         }
-
+        //Sort by debut date
         private void SortByDate()
         {
             var sorted = FilteredArtists.OrderBy(a => a.DebutDate).ToList();
@@ -231,6 +312,7 @@ namespace Music_Labrary_Manager.ViewModels
                 FilteredArtists.Add(a);
             }
         }
+        //Applies genre and search filters
         public void ApplyFilters(string searchText = "")
         {
             var filtered = Artists.AsEnumerable();
@@ -250,7 +332,8 @@ namespace Music_Labrary_Manager.ViewModels
                 FilteredArtists.Add(artist);
             }
         }
-
+        //Those are initial data for testing purposes and you can add your own artists, albums and songs
+        //They are not meant to be here permanently, just so you have something to work with when you first run the application and also for my demonstration video :)
         private void SeedData()
         {
             var daftPunk = new BandArtist
@@ -264,7 +347,7 @@ namespace Music_Labrary_Manager.ViewModels
             var discovery = new Album
             {
                 Title = "Discovery",
-                ReleaseDate = new DateTime(2001, 3, 13)
+                ReleaseDate = new DateTime(1999, 3, 13)
             };
 
             discovery.Songs.Add(new Song{ Title = "One More Time",Duration = TimeSpan.FromMinutes(5), FilePath = "Songs/onemoretime.mp3" });
@@ -307,7 +390,7 @@ namespace Music_Labrary_Manager.ViewModels
             var parachutes = new Album
             {
                 Title = "Parachutes",
-                ReleaseDate = new DateTime(2000, 7, 10)
+                ReleaseDate = new DateTime(2002, 7, 10)
             };
 
             parachutes.Songs.Add(new Song{Title = "Viva La Vida",Duration = TimeSpan.FromMinutes(5), FilePath = "Songs/vivalavida.mp3"});
